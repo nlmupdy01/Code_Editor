@@ -1,12 +1,12 @@
 import React from 'react';
-import CodeEditor from './Component/CodeEdidetor';
+import SourceCodeEditor from './Pages/SourceCodeEditor';
 
 
 
 function App() {
   return (
     <>
-<CodeEditor />
+<SourceCodeEditor />
     </>
   );
 }
