@@ -3,16 +3,27 @@
 import React, { useState, useRef } from "react";
 
 import Editor from "@monaco-editor/react";
-import useLocalStorage from './useLocalStorage';
+import useLocalStorage from '../Hook/useLocalStorage';
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import FileSaver from "file-saver";
+import SaveFile from "../Hook/Savefile";
+
+
+
 
 function CodeEditor() {
+
+
+ 
 
   const [HTML, setHTML] = useLocalStorage("HTML","")
   const [CSS, setCSS] = useLocalStorage("CSS","")
   const [JS, setJS] = useLocalStorage("JS","")
 
   const [active, setActive] = React.useState("HTML")
+
+
+
 
   const IFRAMECODE = `
   <html>
@@ -42,14 +53,37 @@ function CodeEditor() {
           setIsCopied(false);
       }, 1000);
   }; 
+  const handleButtonClick = (event) => {
+    event.preventDefault();
+  
+  };
+  const [Disabled, setDisabled] = useState(false);
 
+  const disableClick = (event) => {
+    event.preventDefault();
+    setDisabled(!Disabled);
+   
+
+  };
+
+  function sayHello() {
+    var blob = new Blob([HTML , CSS,JS], {
+      type: "html/plain;charset=utf-8"
+    });
+    FileSaver.saveAs(blob, "index.html");
+  }
+
+  
+ 
   return (
     <>
     <div style={{ padding: "20px"}}>
       <h1>Code Editor</h1>
       <div style={{ display:"flex", border:"1px solid black" }}>
+     
         {/* editor */}
-        <div style={{width:"100%"}}>
+        <div style={{width:"100%"}} onClick={Disabled ? () => {} : handleButtonClick}>
+
           <button onClick={()=>setActive("HTML")} style={{color:active==="HTML"?"red":"black"}}>HTML</button>
           <button onClick={()=>setActive("CSS")} style={{color:active==="CSS"?"red":"black"}}>CSS</button>
           <button onClick={()=>setActive("JS")} style={{color:active==="JS"?"red":"black"}}>JS</button>
@@ -61,11 +95,14 @@ function CodeEditor() {
      defaultValue={HTML}
      onChange={(value,event)=>setHTML(value)}
    />
+
+   
           // <textarea value={HTML} onChange={event=>setHTML(event.currentTarget.value)}></textarea>
           
           }
           {active==="CSS" && 
           <Editor
+
           height="60vh"
           defaultLanguage="css"
           defaultValue={CSS}
@@ -77,6 +114,7 @@ function CodeEditor() {
           }
           {active==="JS" && 
           <Editor
+         
           height="60vh"
           defaultLanguage="javascript"
           defaultValue={JS}
@@ -94,19 +132,31 @@ function CodeEditor() {
 
         </div>
       </div>
-      <CopyToClipboard text={HTML} onCopy={copyToClip}>
+      <div>
+      <div style={{display:'flex', padding :'10px'}}>
+      <CopyToClipboard text={HTML} onCopy={copyToClip} >
             <div className="copy-btn">
-                <button >Copy </button>
-                {isCopied &&
-                    <span style={{color:'green'}}> Copied..!</span>
-                }
+                <button style={{background:'#22228C' ,border:'1px solid #fff',  borderRadius:'0.3rem',color:'white', width:'6rem' ,height:'3rem' }} >Copy </button>
+              
             </div>
         </CopyToClipboard>
+        <button style={{background:'red',  border:'1px solid #fff' ,borderRadius:'0.3rem' ,color:'white', width:'6rem' ,height:'3rem' , marginLeft:'1rem'}} onClick={disableClick} 
+>
+        {Disabled ? "Lock" : "Unlock"}
+      
+      </button>
+     <button onClick={ sayHello}  style={{background:'green', border:'1px solid #fff' ,borderRadius:'0.3rem' ,color:'white', width:'6rem' ,height:'3rem' ,marginLeft:'1rem'}} >Save</button>
+       </div>
+       {isCopied &&
+                    <span style={{color:'green'}}> Copied..!</span>
+                }
+       </div>
     </div>
-
 
 </>
   );
 }
 
 export default CodeEditor;
+
+

@@ -6,10 +6,7 @@ import CodeEditor from './Component/CodeEdidetor';
 function App() {
   return (
     <>
-
-  <CodeEditor />
-  
-   
+<CodeEditor />
     </>
   );
 }
